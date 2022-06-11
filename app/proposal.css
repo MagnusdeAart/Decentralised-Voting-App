@@ -30,3 +30,7 @@
 .vote-actions > .vote-no {
   background-color: #333;
 }
+
+.vote-actions > .remove-vote {
+  background-color: rgb(180, 32, 32);
+}

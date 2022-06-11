@@ -20,6 +20,7 @@ contract Voting {
 
     event ProposalCreated(uint);
     event VoteCast(uint, address indexed);
+    event VoteRemoved(uint, address indexed);
 
     mapping(address => bool) members;
 
@@ -36,6 +37,9 @@ contract Voting {
         Proposal storage proposal = proposals.push();
         proposal.creator = msg.sender;
         proposal.question = _question;
+        //add an automatic yesvote since the creator is probably in favour
+        proposal.voteStates[msg.sender] = VoteStates.Yes;
+        proposal.yesCount++;
     }
 
     function castVote(uint _proposalId, bool _supports) external {
@@ -63,5 +67,23 @@ contract Voting {
         proposal.voteStates[msg.sender] = _supports ? VoteStates.Yes : VoteStates.No;
 
         emit VoteCast(_proposalId, msg.sender);
+    }
+
+    function removeVote(uint _proposalId) external{
+        require(members[msg.sender]);
+        Proposal storage proposal = proposals[_proposalId];
+
+        // clear out previous vote
+        if(proposal.voteStates[msg.sender] == VoteStates.Yes) {
+            proposal.yesCount--;
+        }
+        if(proposal.voteStates[msg.sender] == VoteStates.No) {
+            proposal.noCount--;
+        }
+        // we're tracking whether or not someone has already voted
+        // and we're keeping track as well of what they voted
+        proposal.voteStates[msg.sender] = VoteStates.Absent;
+
+        emit VoteRemoved(_proposalId, msg.sender);
     }
 }

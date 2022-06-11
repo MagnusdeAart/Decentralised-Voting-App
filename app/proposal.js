@@ -11,6 +11,7 @@ export default function build({ question, yesCount, noCount }, id) {
       <div class="vote-actions">
         <div id="yes-${id}" class="button vote-yes"> Vote Yes </div>
         <div id="no-${id}" class="button vote-no"> Vote No </div>
+        <div id="remove-${id}" class="button remove-vote"> Remove Vote </div>
       </div>
     </div>
   `;

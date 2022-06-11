@@ -30,6 +30,11 @@ async function listenForProposals() {
     proposals[id] = proposal;
     renderProposals();
   });
+  contract.on("VoteRemoved", async (id) => {    //here
+    const proposal = await contract.proposals(id);
+    proposals[id] = proposal;
+    renderProposals();
+  });
 }
 
 function renderProposals() {
@@ -50,6 +55,11 @@ function addListeners(id) {
     const signer = provider.getSigner();
     await ethereum.request({ method: 'eth_requestAccounts' });
     await contract.connect(signer).castVote(id, false);
+  });
+  document.getElementById(`remove-${id}`).addEventListener("click", async () => {   //here
+    const signer = provider.getSigner();
+    await ethereum.request({ method: 'eth_requestAccounts' });
+    await contract.connect(signer).removeVote(id);
   });
 }
 
